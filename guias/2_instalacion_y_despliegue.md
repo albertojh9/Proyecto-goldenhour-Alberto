@@ -1,6 +1,6 @@
 # 🚀 Guía 2: Manual de Instalación y Despliegue Paso a Paso
 
-En esta guía explico de forma sencilla cómo instalar todo lo necesario para arrancar mi proyecto **GoldenHour** en local. He estructurado los pasos para que cualquiera pueda ponerlo en marcha fácilmente. También he añadido al final una sección con los pasos que seguí para crear la base del proyecto (el bootstrapping) por si quieres reconstruirlo en blanco desde cero.
+En esta guía explico de forma sencilla cómo instalar todo lo necesario para arrancar mi proyecto **GoldenHour** en local. He estructurado la secuencia de tareas para simplificar el proceso de configuración y garantizar una puesta en marcha ágil y libre de fricciones técnicas. También he añadido al final una sección con los pasos que seguí para crear la base del proyecto (el bootstrapping) por si quieres reconstruirlo en blanco desde cero.
 
 ---
 
