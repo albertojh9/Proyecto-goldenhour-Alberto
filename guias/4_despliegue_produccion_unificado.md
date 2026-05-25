@@ -2,7 +2,7 @@
 
 En esta guía explico cómo he programado el empaquetado final para unir tanto el cliente móvil (frontend) como el servidor de Java (backend) en **un único archivo ejecutable `.jar`**. 
 
-Este modelo de despliegue unificado es ideal para entregárselo al tribunal o al profesor de mi proyecto de DAW. De esta manera, para arrancar y probar el 100% de la aplicación no hace falta instalar Node.js ni compilar carpetas; solo se necesita **un único comando y usar un único puerto (8080)**.
+Este modelo de despliegue unificado optimiza la distribución y portabilidad del proyecto. Al empaquetar todo el sistema de forma autocontenida, se elimina la necesidad de instalar herramientas de desarrollo en la máquina de producción o de realizar compilaciones manuales en el servidor. Esto permite desplegar y validar el 100% de la aplicación de manera inmediata ejecutando **un único comando y a través del puerto unificado (8080)**.
 
 ---
 
