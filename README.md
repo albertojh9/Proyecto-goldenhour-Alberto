@@ -39,7 +39,7 @@ Para conocer todos los detalles teóricos, metodológicos y de código del proye
     *   📙 [Guía 3: Manual de Usuario Completo](file:///c:/Users/alber/Documents/Proyecto-goldenhour-Alberto/guias/3_manual_de_usuario.md) - Explicación de pantallas, cómo usar el mapa y una batería de 14 pruebas de validación.
     *   📕 [Guía 4: Despliegue de Producción Unificado](file:///c:/Users/alber/Documents/Proyecto-goldenhour-Alberto/guias/4_despliegue_produccion_unificado.md) - Explicación detallada del modelo de integración JAR y puertos.
 *   📂 **[docs/entregables/](file:///c:/Users/alber/Documents/Proyecto-goldenhour-Alberto/docs/entregables/) (Documentos Oficiales del Ciclo):**
-    *   📝 [Checklist de Demo Final y Defensa de Proyecto](file:///c:/Users/alber/Documents/Proyecto-goldenhour-Alberto/docs/entregables/CHECKLIST_DEMO_FINAL.md) - Guion paso a paso de 5-8 minutos para realizar una defensa perfecta ante el tribunal y preguntas clave frecuentes de examen.
+    *   📝 [Guía de Validación y Plan de Pruebas de Integración Funcional (E2E)](file:///c:/Users/alber/Documents/Proyecto-goldenhour-Alberto/docs/entregables/CHECKLIST_DEMO_FINAL.md) - Plan de aseguramiento de calidad (QA) con 14 casos de prueba secuenciales, trazabilidad de APIs REST e informe de decisiones de diseño.
     *   📄 *Documentos PDF de Entregables oficiales del Ciclo (Ficha Técnica, Planificación de Sprints, Requisitos y Diapositivas de la Defensa).*
 
 ---
