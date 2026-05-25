@@ -1,0 +1,287 @@
+.history-content {
+  --background: #10141d;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  color: #a0aec0;
+
+  ion-spinner {
+    margin-bottom: 12px;
+    --color: #ff9f1c;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #a0aec0;
+
+  .empty-icon {
+    font-size: 80px;
+    color: #4a5568;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 14px;
+    max-width: 300px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .btn-goto-map {
+    --background: linear-gradient(90deg, #ff9f1c 0%, #ff4040 100%);
+    --border-radius: 8px;
+    font-weight: 600;
+  }
+}
+
+.routes-list {
+  padding: 8px;
+}
+
+.route-card {
+  --background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  margin: 12px 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-left: 5px solid transparent;
+  transition: all 0.3s ease;
+
+  // Bordes izquierdos según el riesgo general
+  &.CRITICAL { border-left-color: #ff5252; }
+  &.HIGH { border-left-color: #ff9f1c; }
+  &.MEDIUM { border-left-color: #ffd166; }
+  &.LOW { border-left-color: #48bb78; }
+
+  ion-card-title {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  ion-card-subtitle {
+    color: #718096;
+    font-size: 12px;
+  }
+
+  .card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .risk-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 11px;
+    text-transform: uppercase;
+
+    &.CRITICAL { background: rgba(255, 64, 64, 0.15); color: #ff5252; }
+    &.HIGH { background: rgba(255, 159, 28, 0.15); color: #ff9f1c; }
+    &.MEDIUM { background: rgba(255, 209, 102, 0.15); color: #ffd166; }
+    &.LOW { background: rgba(72, 187, 120, 0.15); color: #48bb78; }
+  }
+}
+
+.route-details {
+  p {
+    font-size: 13px;
+    color: #e2e8f0;
+    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+
+  .route-metrics {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    color: #a0aec0;
+  }
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+
+  .btn-load {
+    --border-radius: 8px;
+    --border-color: rgba(255, 159, 28, 0.5);
+    --color: #ff9f1c;
+    font-weight: 600;
+  }
+
+  .btn-toggle {
+    --color: #a0aec0;
+    font-size: 12px;
+  }
+}
+
+.expanded-details {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+
+  h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: #718096;
+    margin-top: 0;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .segments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .segment-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    border-left: 3px solid transparent;
+
+    .order {
+      font-weight: bold;
+      color: #718096;
+    }
+
+    .hospital {
+      flex: 1;
+      margin: 0 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #e2e8f0;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+
+    &.CRITICAL { border-left-color: #ff5252; background: rgba(255, 64, 64, 0.04); .time { color: #ff5252; } }
+    &.HIGH { border-left-color: #ff9f1c; background: rgba(255, 159, 28, 0.04); .time { color: #ff9f1c; } }
+    &.MEDIUM { border-left-color: #ffd166; background: rgba(255, 209, 102, 0.04); .time { color: #ffd166; } }
+    &.LOW { border-left-color: #48bb78; background: rgba(72, 187, 120, 0.04); .time { color: #48bb78; } }
+  }
+}
+
+.guest-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 24px;
+
+  .guest-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .guest-icon {
+    font-size: 72px;
+    color: #ff9f1c;
+    margin-bottom: 20px;
+    filter: drop-shadow(0px 0px 8px rgba(255, 159, 28, 0.3));
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: #a0aec0;
+    line-height: 1.5;
+    margin: 0 0 24px 0;
+  }
+
+  .benefits-list {
+    align-self: flex-start;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    p {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #e2e8f0;
+      margin: 0;
+      text-align: left;
+
+      ion-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .btn-register {
+    --background: linear-gradient(90deg, #ff9f1c 0%, #ff4040 100%);
+    --border-radius: 12px;
+    font-weight: 600;
+    height: 48px;
+    margin: 0;
+    width: 100%;
+  }
+}

@@ -1,0 +1,274 @@
+<ion-content [fullscreen]="true">
+  <!-- Contenedor del Mapa Leaflet -->
+  <div id="map" class="map-container"></div>
+
+  <!-- Leyenda del Mapa flotante con efecto Glassmorphism -->
+  <div class="map-legend glass-card">
+    <div class="legend-item">
+      <span class="legend-dot hospital-dot"></span>
+      <span class="legend-text">Hospital</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot clinic-dot"></span>
+      <span class="legend-text">Centro de Salud</span>
+    </div>
+  </div>
+
+  <!-- Panel de búsqueda flotante con efecto Glassmorphism (Modo Edición) -->
+  <div class="search-panel glass-card" *ngIf="!routeData">
+    <div class="panel-header">
+      <div class="header-left">
+        <ion-icon name="navigate" color="primary"></ion-icon>
+        <h2>Planificador de Ruta Segura</h2>
+      </div>
+      <!-- Botón de Login/Logout integrado de forma elegante -->
+      <ion-button size="small" fill="clear" (click)="logout()" [color]="isGuest ? 'warning' : 'danger'" class="logout-btn">
+        <span *ngIf="isGuest" class="logout-text">Entrar</span>
+        <ion-icon [name]="isGuest ? 'log-in-outline' : 'log-out-outline'" [slot]="isGuest ? 'end' : 'icon-only'"></ion-icon>
+      </ion-button>
+    </div>
+
+    <div class="search-inputs">
+      <div class="input-wrapper">
+        <ion-item lines="none" class="input-item glass-input">
+          <ion-icon name="pin" color="success" slot="start"></ion-icon>
+          <ion-input 
+            placeholder="Buscar origen..." 
+            [(ngModel)]="origin" 
+            name="origin"
+            (input)="onOriginInput($event)"
+            (focus)="onOriginFocus()"
+            (click)="onOriginFocus()">
+          </ion-input>
+          <ion-button fill="clear" (click)="getCurrentLocation('origin')" slot="end" class="gps-btn" title="Usar mi ubicación GPS">
+            <ion-icon name="location" color="primary"></ion-icon>
+          </ion-button>
+        </ion-item>
+        
+        <!-- Sugerencias flotantes de Origen -->
+        <div class="autocomplete-dropdown glass-card animate-up" *ngIf="showOriginMenu">
+          <div class="quick-option" (click)="getCurrentLocation('origin'); showOriginMenu = false;">
+            <ion-icon name="location" color="primary"></ion-icon>
+            <span>📍 Iniciar desde mi ubicación actual (Tiempo Real)</span>
+          </div>
+          <div class="suggestion-item" *ngFor="let item of originSuggestions" (click)="selectSuggestion(item, 'origin')">
+            <ion-icon name="map-outline" slot="start"></ion-icon>
+            <span class="suggestion-text">{{ item.display_name }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="input-wrapper">
+        <ion-item lines="none" class="input-item glass-input">
+          <ion-icon name="pin" color="danger" slot="start"></ion-icon>
+          <ion-input 
+            placeholder="Buscar destino..." 
+            [(ngModel)]="destination" 
+            name="destination"
+            (input)="onDestinationInput($event)"
+            (focus)="onDestinationFocus()"
+            (click)="onDestinationFocus()">
+          </ion-input>
+          <ion-button fill="clear" (click)="getCurrentLocation('destination')" slot="end" class="gps-btn" title="Usar mi ubicación GPS">
+            <ion-icon name="location" color="primary"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <div class="autocomplete-dropdown glass-card animate-up" *ngIf="showDestinationMenu">
+          <div class="quick-option" (click)="routeToClosestHospital('origin', 'hospital'); showDestinationMenu = false;">
+            <ion-icon name="medical" color="danger"></ion-icon>
+            <span>🏥 Buscar hospital más cercano</span>
+          </div>
+          <div class="quick-option" (click)="routeToClosestHospital('origin', 'centro_salud'); showDestinationMenu = false;">
+            <ion-icon name="heart" color="purple"></ion-icon>
+            <span>🩺 Buscar centro de salud más cercano</span>
+          </div>
+          <div class="suggestion-item" *ngFor="let item of destinationSuggestions" (click)="selectSuggestion(item, 'destination')">
+            <ion-icon name="map-outline" slot="start"></ion-icon>
+            <span class="suggestion-text">{{ item.display_name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-actions">
+      <ion-button expand="block" id="btn-calculate-route" (click)="calculateRoute()" [disabled]="calculating" 
+        class="btn-calculate btn-calculate-safe">
+        <ion-spinner name="crescent" *ngIf="calculating"></ion-spinner>
+        <span *ngIf="!calculating">🛡️ Calcular Ruta Segura</span>
+      </ion-button>
+    </div>
+  </div>
+
+
+  <!-- Panel de ruta activa compacto superior (Modo Ruta Activa) -->
+  <div class="active-route-panel glass-card animate-up" *ngIf="routeData">
+    <div class="route-compact-header">
+      <div class="route-summary">
+        <div class="route-point">
+          <span class="dot origin-dot"></span>
+          <span class="point-text" [title]="origin">{{ formatCoordinateText(origin, 'origin') }}</span>
+        </div>
+        <div class="route-arrow">
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </div>
+        <div class="route-point">
+          <span class="dot dest-dot"></span>
+          <span class="point-text" [title]="destination">{{ formatCoordinateText(destination, 'destination') }}</span>
+        </div>
+      </div>
+      
+      <div class="compact-actions">
+        <!-- Badge de tipo de ruta activa -->
+        <span class="route-type-badge safe-badge">
+          🛡️ Ruta Segura
+        </span>
+        <ion-button size="small" fill="clear" (click)="clearMap()" class="btn-compact-edit">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Editar
+        </ion-button>
+        <ion-button size="small" fill="clear" (click)="logout()" [color]="isGuest ? 'warning' : 'danger'" class="logout-btn">
+          <ion-icon [name]="isGuest ? 'log-in-outline' : 'log-out-outline'" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instrucciones de Click para el usuario si están vacíos los inputs -->
+  <div class="map-hint glass-card" *ngIf="!origin || !destination">
+    <p>💡 <strong>Tip:</strong> Haz clic directamente sobre el mapa para fijar el origen y destino en segundos.</p>
+  </div>
+
+  <!-- Panel de información inferior flotante con Glassmorphism tras calcular la ruta (solo si no estamos navegando) -->
+  <div class="info-panel glass-card animate-up" *ngIf="routeData && !isNavigating">
+    <div class="navigation-start-box">
+      <ion-button expand="block" color="success" (click)="startNavigation()" class="btn-start-nav">
+        <ion-icon name="navigate" slot="start"></ion-icon>
+        🚗 Iniciar Trayecto (Guiado Real)
+      </ion-button>
+    </div>
+
+    <div class="info-header">
+      <div class="risk-badge" [ngClass]="routeData.riskLevel">
+        🚨 Riesgo: {{ translateRisk(routeData.riskLevel) }}
+      </div>
+      <div class="metrics">
+        <span><strong>Distancia:</strong> {{ routeData.distance }} km</span>
+        <span><strong>Duración:</strong> {{ formatDuration(routeData.duration) }}</span>
+      </div>
+    </div>
+
+    <!-- Secciones Plegables (Riesgos y Hospitales en Ruta) -->
+    <div class="accordion-container">
+      <ion-accordion-group>
+        
+        <!-- Plegable 1: Centros Médicos Cercanos a la Ruta -->
+        <ion-accordion value="hospitals" *ngIf="routeData.hospitalsOnRoute && routeData.hospitalsOnRoute.length > 0">
+          <ion-item slot="header" color="light" class="accordion-header">
+            <ion-icon name="medical" slot="start" color="danger"></ion-icon>
+            <ion-label>Centros Médicos en Ruta ({{ routeData.hospitalsOnRoute.length }})</ion-label>
+          </ion-item>
+          <div class="ion-padding accordion-content" slot="content">
+            <div class="hospitals-list">
+              <div *ngFor="let hosp of routeData.hospitalsOnRoute" class="hospital-row">
+                <div class="hosp-main">
+                  <span class="hosp-name">🏥 {{ hosp.name }}</span>
+                  <span class="hosp-meta">{{ hosp.city }} · {{ hosp.type === 'hospital' ? 'Hospital de Urgencias' : 'Centro de Salud' }}</span>
+                </div>
+                <div class="hosp-badge">
+                  A {{ hosp.distanceToRoute }} km
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-accordion>
+
+        <!-- Plegable 2: Desglose de Tramos de Riesgo -->
+        <ion-accordion value="segments">
+          <ion-item slot="header" color="light" class="accordion-header">
+            <ion-icon name="trail-sign" slot="start" color="warning"></ion-icon>
+            <ion-label>Desglose de riesgos del trayecto ({{ routeData.totalSegments }} tramos)</ion-label>
+          </ion-item>
+          <div class="ion-padding accordion-content" slot="content">
+            <div class="segments-list">
+              <div *ngFor="let seg of routeData.segments" class="segment-row" [ngClass]="seg.risk">
+                <span class="order">Tramo {{ seg.order }}</span>
+                <span class="hospital">🏥 Hosp: {{ seg.closestHospitalName }}</span>
+                <span class="time">⏱ {{ seg.minutesToClosestHospital }} min</span>
+              </div>
+            </div>
+          </div>
+        </ion-accordion>
+        
+      </ion-accordion-group>
+    </div>
+
+    <!-- Formulario para Guardar la Ruta -->
+    <div class="save-route-box">
+      <ion-item lines="none" class="input-item glass-input">
+        <ion-input placeholder="Nombre de la ruta (Ej: Madrid-Sevilla)" [(ngModel)]="routeName"></ion-input>
+      </ion-item>
+      <ion-button expand="block" (click)="saveRoute()" [disabled]="saving || (!isGuest && !routeName)" class="btn-save">
+        <ion-spinner name="crescent" *ngIf="saving"></ion-spinner>
+        <span *ngIf="!saving">💾 Guardar Ruta en Historial</span>
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Panel de Guiado / Navegación en Tiempo Real (GPS Real) -->
+  <div class="navigation-panel glass-card animate-up" *ngIf="isNavigating">
+    <div class="nav-header">
+      <div class="nav-title">
+        <ion-icon name="navigate-outline" class="pulse-icon" color="primary"></ion-icon>
+        <span class="nav-title-text">Navegación GPS Activa</span>
+      </div>
+      <div class="nav-status-badge">
+        <span class="badge-dot"></span>
+        <span class="badge-text">GPS en vivo</span>
+      </div>
+    </div>
+
+    <div class="nav-body">
+      <!-- Indicación del Próximo Paso de Guiado estilo Google Maps -->
+      <div class="nav-instruction-box">
+        <ion-icon name="arrow-redo" color="success" class="instruction-arrow"></ion-icon>
+        <div class="instruction-text">
+          <span class="inst-action">Continúa por la ruta recomendada</span>
+          <span class="inst-details">Sigue el trazado seguro para garantizar la Hora de Oro</span>
+        </div>
+      </div>
+
+      <div class="nav-metric-grid">
+        <div class="nav-metric">
+          <span class="m-label">Restante</span>
+          <span class="m-val">{{ navRemainingDistance }}</span>
+        </div>
+        <div class="nav-metric">
+          <span class="m-label">Tiempo</span>
+          <span class="m-val">{{ navRemainingDuration }}</span>
+        </div>
+        <div class="nav-metric">
+          <span class="m-label">Riesgo Tramo</span>
+          <span class="m-val risk-text" [ngClass]="navCurrentRisk">{{ translateRisk(navCurrentRisk) }}</span>
+        </div>
+      </div>
+
+      <div class="nav-hospital-box">
+        <div class="hosp-icon">🏥</div>
+        <div class="hosp-info">
+          <span class="h-title">Punto de emergencias de este tramo:</span>
+          <span class="h-name">{{ navClosestHospitalName }}</span>
+          <span class="h-time" *ngIf="navClosestHospitalTime > 0">Tiempo de acceso estimado: <strong>{{ navClosestHospitalTime }} min</strong></span>
+          <span class="h-time" *ngIf="navClosestHospitalTime === 0">Sin estimación de acceso</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <ion-button (click)="stopNavigation()" color="danger" class="btn-nav-stop" expand="block">
+        <ion-icon name="stop-circle-outline" slot="start"></ion-icon>
+        Detener Guiado
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

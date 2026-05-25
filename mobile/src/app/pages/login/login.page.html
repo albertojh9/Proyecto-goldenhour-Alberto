@@ -1,0 +1,65 @@
+<ion-content [fullscreen]="true" class="login-content">
+  <div class="login-container">
+    <div class="logo-area">
+      <ion-icon name="navigate-circle" class="logo-icon"></ion-icon>
+      <h1>GoldenHour</h1>
+      <p>Rutas seguras y control de la Hora de Oro médica</p>
+    </div>
+
+    <div class="card-login">
+      <h2>Iniciar Sesión</h2>
+
+      <form (ngSubmit)="onLogin()">
+        <div class="input-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input
+              type="email"
+              placeholder="Correo electrónico"
+              name="email"
+              [(ngModel)]="email"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input
+              type="password"
+              placeholder="Contraseña"
+              name="password"
+              [(ngModel)]="password"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="error-message" *ngIf="errorMessage">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <ion-button expand="block" type="submit" class="btn-login" [disabled]="loading">
+          <ion-spinner name="crescent" *ngIf="loading"></ion-spinner>
+          <span *ngIf="!loading">Entrar</span>
+        </ion-button>
+      </form>
+
+      <div class="divider-or">
+        <span>o bien</span>
+      </div>
+
+      <ion-button expand="block" fill="outline" class="btn-guest" (click)="onGuestLogin()" [disabled]="loading">
+        <ion-icon name="eye-outline" slot="start"></ion-icon>
+        Entrar como Invitado
+      </ion-button>
+
+      <div class="register-link">
+        ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+      </div>
+    </div>
+  </div>
+</ion-content>
+

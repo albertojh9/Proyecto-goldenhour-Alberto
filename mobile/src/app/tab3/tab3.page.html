@@ -1,0 +1,95 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mi Perfil y Estadísticas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="profile-content">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Perfil</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="profile-container" *ngIf="user">
+    <!-- Ficha del Usuario -->
+    <div class="user-card">
+      <div class="avatar-area">
+        <ion-icon name="person-circle" class="avatar-icon"></ion-icon>
+      </div>
+      <div class="user-info">
+        <h2>{{ user.fullName }}</h2>
+        <p><ion-icon name="mail-outline"></ion-icon> {{ user.email }}</p>
+        <span class="role-badge" [ngClass]="{'guest': isGuest}">{{ user.role }}</span>
+      </div>
+    </div>
+
+    <!-- Panel de Estadísticas -->
+    <div class="stats-panel">
+      <h3>Resumen de Actividad</h3>
+      
+      <div *ngIf="isGuest" class="guest-stats-overlay">
+        <ion-icon name="stats-chart-outline" class="overlay-icon"></ion-icon>
+        <p>Inicia sesión o regístrate para ver tu resumen de actividad y métricas de trayectos seguros.</p>
+      </div>
+
+      <div class="stats-grid" *ngIf="!isGuest">
+        <div class="stat-box">
+          <span class="stat-val">{{ totalRoutes }}</span>
+          <span class="stat-lbl">Rutas Guardadas</span>
+        </div>
+        <div class="stat-box safe">
+          <span class="stat-val">{{ safeRoutes }}</span>
+          <span class="stat-lbl">Rutas Seguras (🟢)</span>
+        </div>
+        <div class="stat-box risk">
+          <span class="stat-val">{{ riskRoutes }}</span>
+          <span class="stat-lbl">Con Tramos de Riesgo (🔴/🟠)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guía Educativa: ¿Qué es la Hora de Oro? -->
+    <div class="education-panel">
+      <h3>La "Hora de Oro" Médica</h3>
+      <div class="edu-content">
+        <div class="edu-item">
+          <ion-icon name="hourglass-outline" class="edu-icon"></ion-icon>
+          <div>
+            <h4>¿Qué es?</h4>
+            <p>Es el intervalo de tiempo (de unos 60 minutos) que discurre desde que se produce un accidente traumático hasta que el herido recibe atención sanitaria definitiva. Recibir asistencia en este tramo reduce la mortalidad drásticamente.</p>
+          </div>
+        </div>
+
+        <div class="edu-item">
+          <ion-icon name="shield-checkmark-outline" class="edu-icon"></ion-icon>
+          <div>
+            <h4>¿Cómo te ayuda GoldenHour?</h4>
+            <p>Analiza el trazado de tu ruta e indica qué tramos tienen un tiempo estimado de acceso a un hospital de urgencias superior al recomendado, permitiéndote tomar rutas alternativas más seguras.</p>
+          </div>
+        </div>
+        
+        <div class="edu-item">
+          <ion-icon name="heart-half-outline" class="edu-icon"></ion-icon>
+          <div>
+            <h4>El Semáforo de Riesgos</h4>
+            <p>
+              🔴 <strong>Crítico:</strong> Hospital a menos de 30 min.<br/>
+              🟠 <strong>Alto:</strong> Acceso a hospital en 30-60 min.<br/>
+              🟡 <strong>Medio:</strong> Acceso a hospital en 60-120 min.<br/>
+              🟢 <strong>Bajo:</strong> Acceso a hospital a más de 120 min (máximo aislamiento).
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de Cerrar Sesión / Registro -->
+    <div class="action-area">
+      <ion-button expand="block" [color]="isGuest ? 'warning' : 'danger'" (click)="logout()" [class]="isGuest ? 'btn-login-guest' : 'btn-logout'">
+        <ion-icon [name]="isGuest ? 'log-in-outline' : 'log-out-outline'" slot="start"></ion-icon> 
+        {{ isGuest ? 'Registrarse o Iniciar Sesión' : 'Cerrar Sesión' }}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,86 @@
+<ion-content [fullscreen]="true" class="register-content">
+  <div class="register-container">
+    <div class="logo-area">
+      <ion-icon name="navigate-circle" class="logo-icon"></ion-icon>
+      <h1>GoldenHour</h1>
+      <p>Crea tu cuenta de seguridad en carretera</p>
+    </div>
+
+    <div class="card-register">
+      <h2>Registrarse</h2>
+
+      <form (ngSubmit)="onRegister()">
+        <div class="input-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-icon name="person-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input
+              type="text"
+              placeholder="Nombre completo"
+              name="fullName"
+              [(ngModel)]="fullName"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input
+              type="email"
+              placeholder="Correo electrónico"
+              name="email"
+              [(ngModel)]="email"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input
+              type="password"
+              placeholder="Contraseña (mín. 8 caracteres)"
+              name="password"
+              [(ngModel)]="password"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-icon name="checkbox-outline" slot="start" class="input-icon"></ion-icon>
+            <ion-input
+              type="password"
+              placeholder="Confirmar contraseña"
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="error-message" *ngIf="errorMessage">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <div class="success-message" *ngIf="successMessage">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>{{ successMessage }}</span>
+        </div>
+
+        <ion-button expand="block" type="submit" class="btn-register" [disabled]="loading">
+          <ion-spinner name="crescent" *ngIf="loading"></ion-spinner>
+          <span *ngIf="!loading">Crear Cuenta</span>
+        </ion-button>
+      </form>
+
+      <div class="login-link">
+        ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,105 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mis Rutas Guardadas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="loadRoutes()" color="primary" *ngIf="!isGuest">
+        <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="history-content">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Mis Rutas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Vista para usuarios Invitados -->
+  <div class="guest-state" *ngIf="isGuest">
+    <div class="guest-card">
+      <ion-icon name="lock-closed-outline" class="guest-icon"></ion-icon>
+      <h3>Historial de Rutas Bloqueado</h3>
+      <p>La función de guardar, recuperar y consultar tus trayectos seguros está reservada exclusivamente para usuarios registrados.</p>
+      
+      <div class="benefits-list">
+        <p><ion-icon name="checkmark-circle-outline" color="warning"></ion-icon> Guarda tus rutas frecuentes</p>
+        <p><ion-icon name="checkmark-circle-outline" color="warning"></ion-icon> Consulta el historial semafórico</p>
+        <p><ion-icon name="checkmark-circle-outline" color="warning"></ion-icon> Visualiza estadísticas en tu perfil</p>
+      </div>
+
+      <ion-button expand="block" (click)="registerOrLogin()" class="btn-register">
+        <ion-icon name="person-add-outline" slot="start"></ion-icon>
+        Registrarse o Iniciar Sesión
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Contenido para usuarios normales -->
+  <ng-container *ngIf="!isGuest">
+    <!-- Estado de carga -->
+    <div class="loading-container" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando tu historial de rutas...</p>
+    </div>
+
+    <!-- Si no hay rutas guardadas -->
+    <div class="empty-state" *ngIf="!loading && routes.length === 0">
+      <ion-icon name="trail-sign-outline" class="empty-icon"></ion-icon>
+      <h3>Historial Vacío</h3>
+      <p>Aún no has guardado ninguna ruta. Calcula una ruta en el mapa y guárdala para verla aquí.</p>
+      <ion-button (click)="goToMap()" class="btn-goto-map">Ir al Mapa</ion-button>
+    </div>
+
+  <!-- Listado de rutas -->
+  <div class="routes-list" *ngIf="!loading && routes.length > 0">
+    <ion-card *ngFor="let route of routes" class="route-card" [ngClass]="getGlobalRisk(route)">
+      <ion-card-header>
+        <div class="card-title-row">
+          <ion-card-title>{{ route.routeName }}</ion-card-title>
+          <span class="risk-badge" [ngClass]="getGlobalRisk(route)">
+            {{ translateRisk(getGlobalRisk(route)) }}
+          </span>
+        </div>
+        <ion-card-subtitle>{{ formatDate(route.createdAt) }}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="route-details">
+          <p><ion-icon name="pin-outline" color="success"></ion-icon> <strong>Origen:</strong> {{ route.origin }}</p>
+          <p><ion-icon name="pin-outline" color="danger"></ion-icon> <strong>Destino:</strong> {{ route.destination }}</p>
+          
+          <div class="route-metrics" *ngIf="parseRouteData(route) as data">
+            <span><strong>Distancia:</strong> {{ data.distance }} km</span>
+            <span><strong>Duración:</strong> {{ formatDuration(data.duration) }}</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <ion-button fill="outline" size="small" (click)="loadRouteOnMap(route)" class="btn-load">
+            <ion-icon name="map-outline" slot="start"></ion-icon> Cargar en Mapa
+          </ion-button>
+          
+          <ion-button fill="clear" size="small" (click)="toggleDetails(route.id)" class="btn-toggle">
+            <ion-icon [name]="expandedRouteId === route.id ? 'chevron-up-outline' : 'chevron-down-outline'" slot="start"></ion-icon>
+            {{ expandedRouteId === route.id ? 'Ocultar tramos' : 'Ver tramos' }}
+          </ion-button>
+        </div>
+
+        <!-- Desglose desplegable de tramos -->
+        <div class="expanded-details" *ngIf="expandedRouteId === route.id && parseRouteData(route) as data">
+          <h4>Desglose de riesgos del trayecto</h4>
+          <div class="segments-list">
+            <div *ngFor="let seg of data.segments" class="segment-row" [ngClass]="seg.risk">
+              <span class="order">Tramo {{ seg.order }}</span>
+              <span class="hospital">🏥 {{ seg.closestHospitalName }}</span>
+              <span class="time">⏱ {{ seg.minutesToClosestHospital }} min</span>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  </ng-container>
+</ion-content>
