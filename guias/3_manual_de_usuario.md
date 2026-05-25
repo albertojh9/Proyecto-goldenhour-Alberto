@@ -1,6 +1,6 @@
 # 📱 Guía 3: Manual de Usuario Completo (Cómo Usar la Aplicación al 100%)
 
-En este manual de usuario explico de forma sencilla y paso a paso cómo funciona cada una de las pantallas de mi aplicación **GoldenHour**. He redactado esta guía de manera muy visual y directa para que cualquiera, aunque no tenga conocimientos informáticos, pueda navegar, calcular rutas y probar todas las opciones del mapa médico con total facilidad.
+En este manual de usuario explico de forma sencilla y paso a paso cómo funciona cada una de las pantallas de mi aplicación **GoldenHour**. He redactado esta guía de manera muy visual y directa para que cualquier usuario, gracias a la interfaz intuitiva y al diseño centrado en la usabilidad, pueda navegar, calcular rutas y probar todas las opciones del mapa médico con total facilidad.
 
 ---
 
